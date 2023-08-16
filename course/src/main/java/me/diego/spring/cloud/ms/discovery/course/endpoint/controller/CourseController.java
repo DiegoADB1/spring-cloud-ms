@@ -1,9 +1,9 @@
-package me.diego.spring.cloud.ms.course.endpoint.controller;
+package me.diego.spring.cloud.ms.discovery.course.endpoint.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.diego.spring.cloud.ms.core.domain.Course;
-import me.diego.spring.cloud.ms.course.endpoint.service.CourseService;
+import me.diego.spring.cloud.ms.discovery.core.domain.Course;
+import me.diego.spring.cloud.ms.discovery.course.endpoint.service.CourseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

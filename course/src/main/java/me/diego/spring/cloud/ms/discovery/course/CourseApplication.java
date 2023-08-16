@@ -1,4 +1,4 @@
-package me.diego.spring.cloud.ms.course;
+package me.diego.spring.cloud.ms.discovery.course;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

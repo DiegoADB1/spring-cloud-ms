@@ -1,4 +1,4 @@
-package me.diego.spring.cloud.ms.core.domain;
+package me.diego.spring.cloud.ms.discovery.core.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
