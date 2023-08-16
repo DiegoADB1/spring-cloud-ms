@@ -1,4 +1,4 @@
-package me.diego.spring.cloud.ms.discovery.course.endpoint.service;
+package me.diego.spring.cloud.ms.course.endpoint.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

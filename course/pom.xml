@@ -12,6 +12,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>course</name>
 	<description>Spring boot microservices</description>
+
 	<properties>
 		<java.version>17</java.version>
 	</properties>
