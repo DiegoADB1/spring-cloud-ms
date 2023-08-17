@@ -1,4 +1,4 @@
-package me.diego.spring.cloud.ms.discovery.core.domain;
+package me.diego.spring.cloud.ms.core.domain;
 
 import java.io.Serializable;
 
