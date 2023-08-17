@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "password")
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ApplicationUser implements AbstractEntity {
 
@@ -24,6 +24,7 @@ public class ApplicationUser implements AbstractEntity {
     private String username;
     @NotNull(message = "The field 'password' is mandatory")
     @Column(nullable = false)
+    @ToString.Exclude
     private String password;
     @NotNull(message = "The field 'role' is mandatory")
     @Column(nullable = false)

@@ -21,6 +21,10 @@ public class GatewayApplication {
                         .path("/course/**")
                         .filters(f -> f.rewritePath("/course/(?<path>.*)", "/${path}"))
                         .uri("lb://course"))
+                .route("auth", r -> r
+                        .path("/auth/**")
+                        .filters(f -> f.rewritePath("/auth/(?<path>.*)", "/${path}"))
+                        .uri("lb://auth"))
                 .build();
     }
 }

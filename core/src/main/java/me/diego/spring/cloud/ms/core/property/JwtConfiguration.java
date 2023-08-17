@@ -22,7 +22,7 @@ public class JwtConfiguration {
 
     @Getter
     public static class Header {
-        private static final String NAME = "Authorization";
-        private static final String PREFIX = "Bearer ";
+        private String name = "Authorization";
+        private String prefix = "Bearer ";
     }
 }
