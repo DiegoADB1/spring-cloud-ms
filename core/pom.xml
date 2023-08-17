@@ -12,7 +12,7 @@
     <artifactId>core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>core</name>
-    <description>Spring boot microservices core by devdojo</description>
+    <description>Spring boot microservices</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
