@@ -1,28 +1,15 @@
 package me.diego.spring.cloud.ms.core.property;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "jwt.config")
-@Getter
-@Setter
-@ToString
 public class JwtConfiguration {
-    private String loginUrl = "/login/**";
-    @NestedConfigurationProperty
-    private Header header = new Header();
-    private int expiration = 3600;
-    private String privateKey = "hWgxCccjxBKg9MJ8ItdYlm9napoAnmKT";
-    private String type = "encrypted";
-
-    @Getter
-    public static class Header {
-        private String name = "Authorization";
-        private String prefix = "Bearer ";
-    }
+    public static final String LOGIN_URL = "/login/**";
+    public static final String HEADER_NAME =  "Authorization";
+    public static final String HEADER_PREFIX = "Bearer ";
+    public static final int EXPIRATION = 3600;
+    public static final String PRIVATE_KEY = "hWgxCccjxBKg9MJ8ItdYlm9napoAnmKT";
+    public static final String TYPE = "encrypted";
 }

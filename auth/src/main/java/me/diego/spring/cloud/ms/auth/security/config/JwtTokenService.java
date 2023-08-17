@@ -25,7 +25,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class JwtTokenService {
-    private final JwtConfiguration jwtConfiguration;
 
     @SneakyThrows
     public String generateTokenJWE(Authentication auth) {
@@ -78,7 +77,7 @@ public class JwtTokenService {
                 )
                 .issuer("http://diego.me")
                 .issueTime(new Date())
-                .expirationTime(new Date(System.currentTimeMillis() + jwtConfiguration.getExpiration() * 1000L))
+                .expirationTime(new Date(System.currentTimeMillis() + JwtConfiguration.EXPIRATION * 1000L))
                 .build();
     }
 
@@ -95,7 +94,7 @@ public class JwtTokenService {
     private String encryptToken(SignedJWT signedJWT) throws JOSEException {
         log.info("Starting the encryptToken method");
 
-        DirectEncrypter directEncrypter = new DirectEncrypter(jwtConfiguration.getPrivateKey().getBytes());
+        DirectEncrypter directEncrypter = new DirectEncrypter(JwtConfiguration.PRIVATE_KEY.getBytes());
 
         JWEObject jweObject = new JWEObject(new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256)
                 .contentType("JWT")
