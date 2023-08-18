@@ -1,11 +1,10 @@
-package me.diego.spring.cloud.ms.auth.security.endpoint.service;
+package me.diego.spring.cloud.ms.auth.endpoint.service;
 
 import lombok.RequiredArgsConstructor;
 import me.diego.spring.cloud.ms.auth.security.user.dto.UserDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,22 +1,17 @@
-package me.diego.spring.cloud.ms.auth.security.endpoint.controller;
+package me.diego.spring.cloud.ms.auth.endpoint.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.diego.spring.cloud.ms.auth.security.config.JwtTokenService;
-import me.diego.spring.cloud.ms.auth.security.endpoint.service.AuthService;
+import me.diego.spring.cloud.ms.auth.endpoint.service.AuthService;
 import me.diego.spring.cloud.ms.auth.security.user.dto.UserDto;
 import me.diego.spring.cloud.ms.core.property.JwtConfiguration;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.MultiValueMapAdapter;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
 
 @RestController
 @RequiredArgsConstructor
