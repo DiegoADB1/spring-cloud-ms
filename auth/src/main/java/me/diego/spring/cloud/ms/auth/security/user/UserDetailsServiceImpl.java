@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.diego.spring.cloud.ms.core.domain.ApplicationUser;
 import me.diego.spring.cloud.ms.core.repository.ApplicationUserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 
@@ -24,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         log.info("Searching in the database by the username '{}'", username);
         return applicationUserRepository.findByUsername(username)
                 .map(CustomUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("Application user '%s' not found".formatted(username)));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username or password are incorrect"));
     }
 
     private static final class CustomUserDetails extends ApplicationUser implements UserDetails {
