@@ -66,7 +66,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException, ServletException {
-        log.info("Authentication was successful for the user '{}', generating JWE token", auth.getName());
 
         String encryptToken = tokenCreator.generateTokenJWE(auth);
 
