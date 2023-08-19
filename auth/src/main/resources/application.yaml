@@ -2,6 +2,8 @@ server:
   port: 8083
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: auth
   jpa:
@@ -17,3 +19,4 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8081/eureka/
+

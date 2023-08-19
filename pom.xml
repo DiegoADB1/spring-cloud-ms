@@ -27,6 +27,7 @@
         <java.version>17</java.version>
         <spring-cloud.version>2022.0.4</spring-cloud.version>
         <core.version>0.0.1-SNAPSHOT</core.version>
+        <token.version>0.0.1-SNAPSHOT</token.version>
         <nimbus-rose.version>9.31</nimbus-rose.version>
     </properties>
 

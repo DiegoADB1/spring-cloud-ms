@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "jwt.config")
 public class JwtConfiguration {
-    public static final String LOGIN_URL = "/login/**";
+    public static final String LOGIN_URL = "/login";
     public static final String HEADER_NAME =  "Authorization";
     public static final String HEADER_PREFIX = "Bearer ";
     public static final int EXPIRATION = 3600;
