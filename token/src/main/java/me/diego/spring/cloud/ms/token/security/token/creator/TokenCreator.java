@@ -10,6 +10,7 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import me.diego.spring.cloud.ms.core.domain.ApplicationUser;
 import me.diego.spring.cloud.ms.core.property.JwtConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -64,15 +65,18 @@ public class TokenCreator {
     }
 
     private JWTClaimsSet createJWTClaimSet(Authentication auth) {
+        ApplicationUser user = (ApplicationUser) auth.getPrincipal();
+
         log.info("Creating the JwtClaimSet");
         return new JWTClaimsSet.Builder()
-                .subject(auth.getPrincipal().toString())
+                .subject(user.getUsername())
                 .claim("authorities", auth
                         .getAuthorities()
                         .stream()
                         .map(GrantedAuthority::getAuthority)
                         .toList()
                 )
+                .claim("userId", user.getId())
                 .issuer("http://diego.me")
                 .issueTime(new Date())
                 .expirationTime(new Date(System.currentTimeMillis() + JwtConfiguration.EXPIRATION * 1000L))
