@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 @Slf4j
@@ -38,22 +39,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String token = header.replace(JwtConfiguration.HEADER_PREFIX, "").trim();
 
-        setSecurityContext(StringUtils.equalsIgnoreCase("signed", JwtConfiguration.TYPE) ? validate(token) : decryptValidating(token));
+        setSecurityContext(StringUtils.equalsIgnoreCase("signed", JwtConfiguration.TYPE) ? tokenConverter.validateTokenSignature(token) : tokenConverter.decryptToken(token));
 
         chain.doFilter(request, response);
-    }
-
-    @SneakyThrows
-    private SignedJWT decryptValidating(String encryptedToken) {
-        String signedToken = tokenConverter.decryptToken(encryptedToken);
-        tokenConverter.validateTokenSignature(signedToken);
-        return SignedJWT.parse(signedToken);
-    }
-
-    @SneakyThrows
-    private SignedJWT validate(String signedToken) {
-        tokenConverter.validateTokenSignature(signedToken);
-        return SignedJWT.parse(signedToken);
     }
 
     public static void setSecurityContext(SignedJWT signedJWT) {

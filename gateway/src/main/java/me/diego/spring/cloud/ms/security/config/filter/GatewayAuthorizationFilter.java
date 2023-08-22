@@ -1,24 +1,15 @@
 package me.diego.spring.cloud.ms.security.config.filter;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.proc.BadJOSEException;
-import com.nimbusds.jose.proc.SimpleSecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
-import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.diego.spring.cloud.ms.core.domain.ApplicationUser;
 import me.diego.spring.cloud.ms.core.property.JwtConfiguration;
 import me.diego.spring.cloud.ms.token.security.token.converter.TokenConverter;
-import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.web.server.ServerWebExchange;
@@ -27,7 +18,6 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -51,7 +41,7 @@ public class GatewayAuthorizationFilter implements WebFilter {
 
         String token = header.replace(JwtConfiguration.HEADER_PREFIX, "").trim();
 
-        String signedToken = tokenConverter.decryptToken(token);
+        String signedToken = tokenConverter.decryptToken(token).serialize();
 
         tokenConverter.validateTokenSignature(signedToken);
 
@@ -95,7 +85,7 @@ public class GatewayAuthorizationFilter implements WebFilter {
         try {
             claims = SignedJWT.parse(signedToken).getJWTClaimsSet();
         } catch (ParseException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         }
 
         return claims;

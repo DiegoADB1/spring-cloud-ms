@@ -1,6 +1,8 @@
 package me.diego.spring.cloud.ms.token.security.token.converter;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.KeyLengthException;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -12,29 +14,34 @@ import me.diego.spring.cloud.ms.core.property.JwtConfiguration;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenConverter {
 
-    @SneakyThrows
-    public String decryptToken(String encryptedToken) {
+    public SignedJWT decryptToken(String encryptedToken)  {
         log.info("Decrypting token");
+        try {
+            JWEObject jweObject = JWEObject.parse(encryptedToken);
 
-        JWEObject jweObject = JWEObject.parse(encryptedToken);
+            DirectDecrypter directDecrypter = new DirectDecrypter(JwtConfiguration.PRIVATE_KEY.getBytes());
 
-        DirectDecrypter directDecrypter = new DirectDecrypter(JwtConfiguration.PRIVATE_KEY.getBytes());
+            jweObject.decrypt(directDecrypter);
 
-        jweObject.decrypt(directDecrypter);
+            log.info("Token decrypted, return signed token . . .");
 
-        log.info("Token decrypted, return signed token . . .");
-
-        return jweObject.getPayload().toSignedJWT().serialize();
+            return jweObject.getPayload().toSignedJWT();
+        } catch (ParseException | JOSEException e) {
+            log.error("Invalid token");
+            throw new AccessDeniedException("invalid token");
+        }
     }
 
-    @SneakyThrows
-    public void validateTokenSignature(String signedToken) {
+    public SignedJWT validateTokenSignature(String signedToken) {
         log.info("Starting method validate token signature . . .");
+        try {
         SignedJWT signedJWT = SignedJWT.parse(signedToken);
 
         log.info("Token parsed! Retrieving public key from signed token");
@@ -48,5 +55,10 @@ public class TokenConverter {
         }
 
         log.info("The token has a valid signature");
+        return signedJWT;
+        } catch (ParseException | JOSEException e) {
+            log.error("Invalid token");
+            throw new AccessDeniedException("invalid token");
+        }
     }
 }
