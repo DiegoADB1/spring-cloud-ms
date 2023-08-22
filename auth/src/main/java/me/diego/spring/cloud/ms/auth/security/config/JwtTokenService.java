@@ -66,6 +66,7 @@ public class JwtTokenService {
     }
 
     private JWTClaimsSet createJWTClaimSet(Authentication auth) {
+        //TODO solve multiple authorities error in jwt claims
         log.info("Creating the JwtClaimSet");
         return new JWTClaimsSet.Builder()
                 .subject(auth.getPrincipal().toString())
