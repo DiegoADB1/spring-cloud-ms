@@ -14,6 +14,7 @@ import me.diego.spring.cloud.ms.core.domain.ApplicationUser;
 import me.diego.spring.cloud.ms.core.property.JwtConfiguration;
 import me.diego.spring.cloud.ms.token.security.token.converter.TokenConverter;
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -55,6 +56,15 @@ public class GatewayAuthorizationFilter implements WebFilter {
         tokenConverter.validateTokenSignature(signedToken);
 
         Authentication auth = createAuthentication(signedToken);
+
+        if (JwtConfiguration.TYPE.equalsIgnoreCase("signed")) {
+            ServerHttpRequest mutateRequest = exchange.getRequest()
+                    .mutate()
+                    .header(JwtConfiguration.HEADER_NAME, JwtConfiguration.HEADER_PREFIX + signedToken).build();
+
+            return chain.filter(exchange.mutate().request(mutateRequest).build())
+                    .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
+        }
 
         return chain.filter(exchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
     }
