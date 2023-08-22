@@ -28,9 +28,10 @@ public class GatewayWebSecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .cors(request -> request.configurationSource(cors -> new CorsConfiguration().applyPermitDefaultValues()))
                 .addFilterBefore(new GatewayAuthorizationFilter(tokenConverter), SecurityWebFiltersOrder.AUTHORIZATION)
+                //TODO when a user has only role user return 403 error instead 401
                 .authorizeExchange(req -> req
-                        .pathMatchers(JwtConfiguration.LOGIN_URL).permitAll()
-                        .pathMatchers("/course/admin/**").hasRole("ADMIN")
+                        .pathMatchers("/auth/login").permitAll()
+                        .pathMatchers("/course/v1/admin/course/**").hasRole("ADMIN")
                         .anyExchange().authenticated()
                 )
                 .build();

@@ -9,9 +9,14 @@ import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import me.diego.spring.cloud.ms.core.domain.ApplicationUser;
 import me.diego.spring.cloud.ms.core.property.JwtConfiguration;
 import me.diego.spring.cloud.ms.token.security.token.converter.TokenConverter;
+import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -25,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GatewayAuthorizationFilter implements WebFilter {
     private final TokenConverter tokenConverter;
 
@@ -48,15 +54,30 @@ public class GatewayAuthorizationFilter implements WebFilter {
 
         tokenConverter.validateTokenSignature(signedToken);
 
-        JWTClaimsSet claims = getClaims(signedToken);
+        Authentication auth = createAuthentication(signedToken);
 
-        ArrayList<String> authorities = (ArrayList<String>) claims.getClaim("authorities");
-        List<SimpleGrantedAuthority> authoritiesParsed = parseRoles(authorities);
-        String username = claims.getSubject();
+        return chain.filter(exchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
+    }
 
-        var authentication = new UsernamePasswordAuthenticationToken(username, null, authoritiesParsed);
+    private Authentication createAuthentication(String signedToken) {
+        try {
+            JWTClaimsSet claims = getClaims(signedToken);
+            List<String> authorities = claims.getStringListClaim("authorities");
+            String username = claims.getSubject();
 
-        return chain.filter(exchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
+            ApplicationUser applicationUser = ApplicationUser.builder()
+                    .id(claims.getLongClaim("userId"))
+                    .username(username)
+                    .role(String.join(",", authorities))
+                    .build();
+
+            var auth = new UsernamePasswordAuthenticationToken(applicationUser, null, parseRoles(authorities));
+            auth.setDetails(signedToken);
+            return auth;
+        } catch (ParseException e) {
+            log.error("Error setting security context", e);
+            throw new org.apache.http.ParseException("Error while parsing jwt");
+        }
     }
 
     private JWTClaimsSet getClaims(String signedToken) {
