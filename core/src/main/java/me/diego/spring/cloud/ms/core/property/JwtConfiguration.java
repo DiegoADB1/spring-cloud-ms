@@ -11,5 +11,5 @@ public class JwtConfiguration {
     public static final String HEADER_PREFIX = "Bearer ";
     public static final int EXPIRATION = 3600;
     public static final String PRIVATE_KEY = "hWgxCccjxBKg9MJ8ItdYlm9napoAnmKT";
-    public static final String TYPE = "signed";
+    public static final String TYPE = "encrypted";
 }

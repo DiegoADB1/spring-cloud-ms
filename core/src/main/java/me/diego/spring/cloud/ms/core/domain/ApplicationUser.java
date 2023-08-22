@@ -1,5 +1,7 @@
 package me.diego.spring.cloud.ms.core.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -12,6 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApplicationUser implements AbstractEntity {
 
     @Id
