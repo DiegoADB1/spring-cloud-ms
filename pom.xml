@@ -29,6 +29,7 @@
         <core.version>0.0.1-SNAPSHOT</core.version>
         <token.version>0.0.1-SNAPSHOT</token.version>
         <nimbus-rose.version>9.31</nimbus-rose.version>
+        <spring-doc.version>2.2.0</spring-doc.version>
     </properties>
 
     <dependencies>

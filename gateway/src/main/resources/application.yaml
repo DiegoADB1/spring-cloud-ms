@@ -13,3 +13,22 @@ eureka:
       defaultZone: http://localhost:8081/eureka/
     fetch-registry: true
     register-with-eureka: true
+
+springdoc:
+  enable-native-support: true
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: API Gateway Service
+        primaryName: API Gateway Service
+      - url: /course/v3/api-docs
+        name: Course service
+        primaryName: Course service
+      - url: /auth/v3/api-docs
+        name: Auth Service
+        primaryName: Auth Service

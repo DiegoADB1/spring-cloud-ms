@@ -41,7 +41,7 @@ public class SecurityCredentialsConfig {
                 .addFilter(new JwtAuthenticationFilter(authManager, tokenCreator))
                 .authorizeHttpRequests(req -> req
                         .requestMatchers("/user/info/**").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/login", "/v3/**", "/swagger-ui/**").permitAll()
                 );
 
         return http.build();

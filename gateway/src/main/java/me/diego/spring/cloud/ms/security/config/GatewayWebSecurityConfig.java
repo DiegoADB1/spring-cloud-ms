@@ -9,6 +9,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -21,6 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 @Import(TokenConverter.class)
 public class GatewayWebSecurityConfig {
     private final TokenConverter tokenConverter;
+
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 
@@ -31,6 +33,7 @@ public class GatewayWebSecurityConfig {
                 //TODO when a user has only role user return 403 error instead 401
                 .authorizeExchange(req -> req
                         .pathMatchers("/auth/login").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/swagger-resources/**", "/webjars/swagger-ui/**", "/v3/api-docs/**", "/course/v3/api-docs/**", "/auth/v3/api-docs/**", "/swagger-ui.html", "/webjars/swagger-ui/index.html/**").permitAll()
                         .pathMatchers("/course/v1/admin/course/**").hasRole("ADMIN")
                         .anyExchange().authenticated()
                 )

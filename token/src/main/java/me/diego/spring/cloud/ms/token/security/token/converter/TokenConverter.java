@@ -2,13 +2,11 @@ package me.diego.spring.cloud.ms.token.security.token.converter;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEObject;
-import com.nimbusds.jose.KeyLengthException;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.diego.spring.cloud.ms.core.property.JwtConfiguration;
 import org.springframework.security.access.AccessDeniedException;
