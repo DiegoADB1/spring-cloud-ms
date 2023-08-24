@@ -26,15 +26,23 @@ public class GatewayWebSecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 
+        String[] swaggerPaths = new String[]{
+                "/swagger-resources/**",
+                "/webjars/swagger-ui/**",
+                "/v3/api-docs/**",
+                "/course/v3/api-docs/**",
+                "/auth/v3/api-docs/**",
+                "/swagger-ui.html",
+                "/webjars/swagger-ui/index.html/**"};
+
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .cors(request -> request.configurationSource(cors -> new CorsConfiguration().applyPermitDefaultValues()))
                 .addFilterBefore(new GatewayAuthorizationFilter(tokenConverter), SecurityWebFiltersOrder.AUTHORIZATION)
-                //TODO when a user has only role user return 403 error instead 401
                 .authorizeExchange(req -> req
                         .pathMatchers("/auth/login").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/swagger-resources/**", "/webjars/swagger-ui/**", "/v3/api-docs/**", "/course/v3/api-docs/**", "/auth/v3/api-docs/**", "/swagger-ui.html", "/webjars/swagger-ui/index.html/**").permitAll()
-                        .pathMatchers("/course/v1/admin/course/**").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.GET, swaggerPaths).permitAll()
+                        .pathMatchers("/course/v1/admin/course/**").hasRole("ROLE_ADMIN")
                         .anyExchange().authenticated()
                 )
                 .build();
