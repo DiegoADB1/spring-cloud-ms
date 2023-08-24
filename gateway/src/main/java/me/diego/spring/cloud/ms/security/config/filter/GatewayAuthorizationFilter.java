@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.diego.spring.cloud.ms.core.domain.ApplicationUser;
 import me.diego.spring.cloud.ms.core.property.JwtConfiguration;
+import me.diego.spring.cloud.ms.exception.domain.InvalidTokenException;
 import me.diego.spring.cloud.ms.token.security.token.converter.TokenConverter;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +20,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -62,6 +65,12 @@ public class GatewayAuthorizationFilter implements WebFilter {
     private Authentication createAuthentication(String signedToken) {
         try {
             JWTClaimsSet claims = getClaims(signedToken);
+            Instant expirationTime = claims.getExpirationTime().toInstant();
+
+            if (expirationTime.isBefore(Instant.now())) {
+                throw new InvalidTokenException(HttpStatus.UNAUTHORIZED);
+            }
+
             List<String> authorities = claims.getStringListClaim("authorities");
             String username = claims.getSubject();
 
@@ -76,7 +85,7 @@ public class GatewayAuthorizationFilter implements WebFilter {
             return auth;
         } catch (ParseException e) {
             log.error("Error setting security context", e);
-            throw new org.apache.http.ParseException("Error while parsing jwt");
+            throw new InvalidTokenException(HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -85,7 +94,7 @@ public class GatewayAuthorizationFilter implements WebFilter {
         try {
             claims = SignedJWT.parse(signedToken).getJWTClaimsSet();
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            throw new InvalidTokenException(HttpStatus.UNAUTHORIZED);
         }
 
         return claims;

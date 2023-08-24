@@ -2,6 +2,7 @@ package me.diego.spring.cloud.ms.token.security.token.converter;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -19,7 +20,7 @@ import java.text.ParseException;
 @RequiredArgsConstructor
 public class TokenConverter {
 
-    public SignedJWT decryptToken(String encryptedToken)  {
+    public SignedJWT decryptToken(String encryptedToken) {
         log.info("Decrypting token");
         try {
             JWEObject jweObject = JWEObject.parse(encryptedToken);
@@ -40,20 +41,21 @@ public class TokenConverter {
     public SignedJWT validateTokenSignature(String signedToken) {
         log.info("Starting method validate token signature . . .");
         try {
-        SignedJWT signedJWT = SignedJWT.parse(signedToken);
+            SignedJWT signedJWT = SignedJWT.parse(signedToken);
 
-        log.info("Token parsed! Retrieving public key from signed token");
+            log.info("Token parsed! Retrieving public key from signed token");
 
-        RSAKey publicKey = RSAKey.parse(signedJWT.getHeader().getJWK().toJSONObject());
+            RSAKey publicKey = RSAKey.parse(signedJWT.getHeader().getJWK().toJSONObject());
 
-        log.info("Public key retrieved, validating signature . . .");
+            log.info("Public key retrieved, validating signature . . .");
 
-        if(!signedJWT.verify(new RSASSAVerifier(publicKey))) {
-            throw new AccessDeniedException("Invalid token signature");
-        }
+            if (!signedJWT.verify(new RSASSAVerifier(publicKey))) {
+                throw new AccessDeniedException("Invalid token signature");
+            }
 
-        log.info("The token has a valid signature");
-        return signedJWT;
+            log.info("The token has a valid signature");
+
+            return signedJWT;
         } catch (ParseException | JOSEException e) {
             log.error("Invalid token");
             throw new AccessDeniedException("invalid token");
